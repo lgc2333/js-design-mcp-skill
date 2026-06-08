@@ -16,11 +16,9 @@
 npx skills add lgc2333/js-design-mcp-skill
 ```
 
-然后在即时设计中安装并打开 MCP 插件：
+然后安装以下插件，安装和连接方式请参考下面的插件页说明：
 
-[即时设计 MCP 插件](https://js.design/community?category=detail&type=plugin&id=6974f39f0aebe8c71f2bb18c)
-
-MCP 插件的安装和连接方式请参考插件页说明。
+[九匠即时 MCP](https://js.design/community?category=detail&type=plugin&id=6974f39f0aebe8c71f2bb18c)
 
 ## 它能帮 Agent 做什么
 
