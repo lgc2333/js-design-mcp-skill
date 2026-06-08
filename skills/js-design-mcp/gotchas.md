@@ -14,6 +14,14 @@ session details in `tests/pressure-scenarios.md` instead.
   matter, set layout fields, call `resize()`, then read back `width`/`height`.
 - Auto-layout frames may get default padding. Set all four padding fields
   explicitly when spacing matters.
+- `SPACE_BETWEEN` may normalize back to `MIN` in some runs. For critical left/right
+  separation, insert a transparent spacer frame with `layoutGrow = 1` and verify
+  child positions.
+- Child rows can look correct in data but still clip visually after parent
+  padding/resize changes. Export or screenshot important frames and check for
+  clipped edges, overlapped text, and stuck-together labels.
+- `save_image` may fail if the MCP plugin's debug path is missing, for example
+  `C:\tmp\mcp-debug.log`. Create the missing directory, then retry the export.
 - Treat layout writes as untrusted until verified. Return JSON-safe projections
   or use `get_node_children` to confirm final `layoutMode`, alignment, size, and
   child count.
