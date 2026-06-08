@@ -1,0 +1,12 @@
+{
+  "name": "jsdesign-mcp-skill",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier -cw ."
+  },
+  "devDependencies": {
+    "prettier": "^3.8.3"
+  }
+}
