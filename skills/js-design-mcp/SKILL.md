@@ -72,6 +72,12 @@ Common entries:
 
 Prefer `jsDesign`, not `figma`. The typings expose `figma` as a compatibility alias, but JiShi docs and MCP prompts should use `jsDesign`.
 
+## Gotchas
+
+Before creating or reparenting auto-layout nodes, read `gotchas.md` for observed
+JiShi MCP pitfalls such as default current-page parenting, `appendChild` layout
+resets, and auto-layout size/padding recalculation.
+
 ## Other MCP Tools
 
 Keep these concise unless you have an observed result:
@@ -96,5 +102,6 @@ All tools return MCP `content` text. Parse or describe the text payload from the
 
 ## References
 
+- `gotchas.md` - observed node creation, reparenting, and auto-layout pitfalls.
 - `references/crawl-notes.md` - official entry points and crawl findings.
 - `references/official-plugin-docs/` - 70 official docs: 59 API pages and 11 guide pages.
