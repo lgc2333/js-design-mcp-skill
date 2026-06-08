@@ -1,6 +1,6 @@
 ---
 name: js-design-mcp
-description: Use when controlling JiShi Design through js-design MCP, especially writing execute_script code, reading jsDesign plugin API docs, or interpreting MCP tool return shapes
+description: Use before any JiShi Design/js-design MCP action or mcp__js_design tool call, especially writing execute_script code, reading jsDesign plugin API docs, setting export settings, or interpreting MCP tool return shapes
 ---
 
 # JiShi Design MCP

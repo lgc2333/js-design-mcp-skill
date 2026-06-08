@@ -25,6 +25,35 @@ session details in `tests/pressure-scenarios.md` instead.
 - Treat layout writes as untrusted until verified. Return JSON-safe projections
   or use `get_node_children` to confirm final `layoutMode`, alignment, size, and
   child count.
+- Do not delete nodes while recursively walking their live child tree. First
+  collect target node IDs, then fetch each ID and mutate/remove it in a second
+  pass. Deleting during traversal can make later `children` reads fail with
+  "node ... does not exist".
+- When editing text at scale, call `loadFontAsync` for the target font before
+  setting `characters`, `fontName`, `textStyleId`, `lineHeight`,
+  `letterSpacing`, or `textAutoResize`. Skipping this can leave text layout in a
+  stale or visually collapsed state even when node dimensions read back as sane.
+- Verify text styles after creating them. In current JiShi MCP runs,
+  `TextStyle.lineHeight = { unit: "AUTO" }` and
+  `TextStyle.letterSpacing = { unit: "PIXELS", value: 0 }` may read back as
+  invalid-looking values such as `PIXELS: 0` or a nested letter-spacing object.
+  If applying the style makes text render vertically or disappear, keep the
+  named style as a system reference but write `fontName`, `fontSize`,
+  `lineHeight`, and `letterSpacing` directly on page text nodes.
+- After applying text styles, export or screenshot at least one affected page.
+  JSON reads can show nonzero width/height while the rendered text is still
+  stacked vertically due to style/layout cache issues.
+- Export names can come from source components and ancestor frames, not just the
+  visible instance being edited. When normalizing export names, inspect the real
+  source page, `mainComponent`, component rows, and every exported node's
+  ancestors; verify each ancestor segment is snake_case.
+- JiShi may coerce fractional `SCALE` export constraints such as `1 / 3` or
+  `2 / 3` to `0` when read back. For Android densities from a 3x artboard, use
+  per-node `WIDTH` constraints instead and verify the stored widths.
+- Avoid exporting content containers that only group screen UI. If a frame is
+  there to organize a page section, clear its `exportSettings`; export only the
+  screen, real bitmap/decorative assets, icons, launchers, and other developer
+  resources.
 
 ## Tiny Pattern
 
@@ -32,7 +61,11 @@ session details in `tests/pressure-scenarios.md` instead.
 const child = jsDesign.createFrame();
 parent.appendChild(child);
 child.layoutMode = "HORIZONTAL";
-child.paddingLeft = child.paddingRight = child.paddingTop = child.paddingBottom = 0;
+child.paddingLeft =
+  child.paddingRight =
+  child.paddingTop =
+  child.paddingBottom =
+    0;
 child.resize(354, 44);
 return { ok: true, layoutMode: child.layoutMode, width: child.width };
 ```
