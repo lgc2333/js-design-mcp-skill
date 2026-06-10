@@ -77,9 +77,11 @@ Prefer `jsDesign`, not `figma`. The typings expose `figma` as a compatibility al
 
 ## Gotchas
 
-Before creating or reparenting auto-layout nodes, read `gotchas.md` for observed
-JiShi MCP pitfalls such as default current-page parenting, `appendChild` layout
-resets, and auto-layout size/padding recalculation.
+Before creating or reparenting auto-layout nodes, read `gotchas.md` for observed JiShi MCP pitfalls such as default current-page parenting, `appendChild` layout resets, and auto-layout size/padding recalculation.
+
+## Visual Verification
+
+After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads are not enough; clipped text and 0-width labels must be checked visually.
 
 ## Other MCP Tools
 
