@@ -3,7 +3,8 @@
 ## Rules
 
 - Run `npm run format` before work is done.
-- After using JSDesign MCP, if there are any pitfalls worth noting, record them in gotchas.md
+- After using JSDesign MCP, if there are any pitfalls worth noting, record them in gotchas.md.
+- Use `temp` folder under this project (if there's no, create one) to store temporary output images and so on.
 
 ## Note
 
