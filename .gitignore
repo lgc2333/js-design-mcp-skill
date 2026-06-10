@@ -1,3 +1,5 @@
 node_modules/
-tmp/
-.agents/
+temp/
+
+.agents/skills/*
+!.agents/skills/js-design-mcp

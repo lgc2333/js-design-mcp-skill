@@ -35,25 +35,28 @@ try {
       width: node.width,
       height: node.height,
     })),
-  };
+  }
 } catch (error) {
   return {
     ok: false,
     name: error && error.name,
     message: error && error.message,
-  };
+    stack: error && error.stack,
+  }
 }
 ```
 
 Avoid raw nodes and non-JSON values:
 
 ```js
-return jsDesign.currentPage.children[0]; // bad: often serializes poorly
+return jsDesign.currentPage.children[0] // bad: often serializes poorly
 ```
 
 Return only strings, numbers, booleans, null, arrays, and plain objects. Avoid `undefined`, no-return scripts, functions, symbols, BigInt, Date, cyclic objects, and raw node objects. Promise returns are supported; `console.log` is not returned to the caller.
 
-Use `{ ok: true, ... }` for success and `{ ok: false, name, message }` for failures so callers can distinguish script errors from MCP transport errors.
+Use `{ ok: true, ... }` for success and `{ ok: false, name, message, stack }` for failures so callers can distinguish script errors from MCP transport errors.
+
+Keep `execute_script` calls small enough to debug. Prefer splitting large edits into focused discovery, mutation, and verification calls.
 
 ## Official API Docs
 
@@ -96,7 +99,7 @@ All tools return MCP `content` text. Parse or describe the text payload from the
 - `get_page_nodes`: JSON object like `{ pageName, pageId, nodeCount, nodes }`; `nodes` are top-level summaries.
 - `get_selection`: either `"No selection"` or a JSON array of selected node summaries/details.
 - `get_node_children`: observed as a JSON array of child node summaries/details for the requested node.
-- `execute_script`: whatever the script returns; by this skill it must be `{ ok: true, ... }` or `{ ok: false, name, message }`.
+- `execute_script`: whatever the script returns; by this skill it must be `{ ok: true, ... }` or `{ ok: false, name, message, stack }`.
 - `save_image`: text status or error text; can fail for environment/path reasons.
 - `download_icons`: SVG/download/status/error text depending on selection, node IDs, and environment.
 
