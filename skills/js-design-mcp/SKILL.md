@@ -1,6 +1,6 @@
 ---
 name: js-design-mcp
-description: Use when performing JiShi Design (js.design) MCP operations, including inspecting nodes, running execute_script, creating canvas content, exporting assets, or using PluginAPI/WidgetAPI references.
+description: 'Use when need to call JiShi Design (js.design) MCP execute_script or write plugin-context JavaScript; simple read operations do not require this skill. Note: Check connection with list_plugin_clients first before calling any tool.'
 ---
 
 # JiShi Design MCP
@@ -8,14 +8,6 @@ description: Use when performing JiShi Design (js.design) MCP operations, includ
 ## Overview
 
 Use `execute_script` as a JiShi Design plugin-context JavaScript runner. Keep three layers separate: the MCP text wrapper, the script return value, and JiShi `jsDesign` PluginAPI objects.
-
-## First Move
-
-1. Check connection with `list_plugin_clients`.
-2. For discovery, prefer `get_page_nodes`, `get_selection`, or `get_node_children`.
-3. For custom reads/writes, use `execute_script` with a `try/catch` wrapper, explicit `return`, and JSON-safe projections.
-
-If `list_plugin_clients` shows no connected JiShi plugin client, report the missing connection and ask the user to open/start the JiShi MCP plugin before assuming `execute_script` can run.
 
 ## execute_script Rules
 
@@ -89,6 +81,10 @@ Rules:
 - Created nodes are parented to `jsDesign.currentPage`; append to another parent after creation if needed.
 - Use imperative creation only for small edits, unsupported node types, post-processing, or mutations of existing nodes.
 
+## Visual Verification
+
+After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads can confirm node fields, but they cannot prove what JiShi actually rendered: text may clip, auto-layout may recalculate unexpectedly, exported assets may be blank or scaled wrong, and icons can disappear even when dimensions look sane. Use visual inspection as the final source of truth for rendered output.
+
 ## Gotchas
 
 Scan the relevant file in `references/gotchas/` before MCP operations:
@@ -100,10 +96,6 @@ Scan the relevant file in `references/gotchas/` before MCP operations:
 - `text-styles.md` - font loading, text style links, and text mutation pitfalls.
 - `exports-assets.md` - image export, export settings, names, and asset cleanup.
 
-## Visual Verification
-
-After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads can confirm node fields, but they cannot prove what JiShi actually rendered: text may clip, auto-layout may recalculate unexpectedly, exported assets may be blank or scaled wrong, and icons can disappear even when dimensions look sane. Use visual inspection as the final source of truth for rendered output.
-
 ## Official API References
 
 Start at `references/docs-overview.md`. Use Markdown docs for concepts and examples, and typings for exact API signatures, fields, overloads, and literal values.
@@ -114,23 +106,9 @@ Start at `references/docs-overview.md`. Use Markdown docs for concepts and examp
 - Widget typings: `references/official-typings/widget/index.d.ts`.
 - Maintenance notes: `references/docs-crawl-notes.md`.
 
-## Tool Return Types
-
-All tools return MCP `content` text. Parse or describe the text payload from the observed call.
-
-- `list_plugin_clients`: JSON array of connected clients; each observed client has `clientId`, `connectedAt`, and `info`.
-- `get_page_nodes`: JSON object like `{ pageName, pageId, nodeCount, nodes }`; `nodes` are top-level summaries.
-- `get_selection`: either `"No selection"` or a JSON array of selected node summaries/details.
-- `get_node_children`: observed as a JSON array of child node summaries/details for the requested node.
-- `execute_script`: whatever the script returns; by this skill it must be `{ ok: true, ... }` or `{ ok: false, name, message, stack }`.
-- `save_image`: text status or error text; can fail for environment/path reasons.
-- `download_icons`: SVG/download/status/error text depending on selection, node IDs, and environment.
-
-Do not invent universal fields like `{ success, data }`. Tools return MCP text content, but the JSON or text inside depends on the specific tool, plugin state, and plugin version.
-
 ## References
 
-- `references/gotchas/` - short notes for observed JSX creation, JS node operations, layout, text, export, and API mismatch pitfalls.
+- `references/gotchas/`
 - `references/docs-crawl-notes.md` - official docs static URL list maintenance notes and crawl findings.
 - `references/docs-overview.md` - short index for official docs and typings.
 - `references/official-docs/` - 122 official docs: 70 Plugin API docs and 52 Widget API docs.
