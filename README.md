@@ -63,3 +63,7 @@ npx skills add lgc2333/js-design-mcp-skill
 - `pnpm run format`：Prettier 格式化。
 
 刷新 docs 或 typings 后，确认输出无误，再把生成结果提升到 `skills/js-design-mcp/references/` 下对应目录。
+
+## License
+
+除 `reference/official-docs` 与 `reference/official-typings` 目录下的内容外，其余内容均采用 CC0 1.0 许可证。
