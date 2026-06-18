@@ -29,7 +29,7 @@ The official typings crawler is package-based:
 - `temp/official-typings/` - generated typings output and `crawl-manifest.json`.
 - `skills/js-design-mcp/references/official-docs/` - skill reference docs when the generated docs are promoted into the skill.
 - `skills/js-design-mcp/references/official-typings/` - skill reference typings when the generated typings are promoted into the skill.
-- `skills/js-design-mcp/references/gotchas.md` - reusable JiShi MCP runtime pitfalls discovered while using the tool.
+- `skills/js-design-mcp/references/gotchas/` - reusable JiShi MCP runtime pitfalls discovered while using the tool.
 - `skills/js-design-mcp/references/docs-crawl-notes.md` - this maintenance note.
 
 ## Official Entry Points

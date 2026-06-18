@@ -1,0 +1,11 @@
+# Auto Layout and Sizing Gotchas
+
+- Enabling or changing auto layout can recalculate size. If exact dimensions matter, set layout fields, call `resize()`, then read back `width`/`height`.
+- Auto-layout frames may get default padding. Set all four padding fields explicitly when spacing matters.
+- `SPACE_BETWEEN` may normalize back to `MIN` in some runs. For critical left/right separation, insert a transparent spacer frame with `layoutGrow = 1` and verify child positions.
+- Avoid setting `layoutPositioning = 'ABSOLUTE'` on newly created nodes inside auto-layout frames unless it has been probed in the current plugin version. In one JiShi MCP run it threw `Cannot read properties of null (reading 'isSymbolInstance')`; use explicit x/y sizing outside auto layout or a wrapper frame instead.
+- For breakpoint artboards, do not use `rescale()` on mixed text/vector screens without visual export checks. In one run it made text font sizes read back near `0.1` and made small vector icons vanish or distort. For nested vector icon frames, scaling the parent with `relativeTransform = [[scale, 0, x], [0, scale, y]]` preserved rendering better than resizing child vectors.
+- Be careful setting auto-layout properties on component instances such as bottom navigation. In one run, changing `layoutMode`/alignment on the instance recalculated its width from the artboard width to the internal content width; restore with `resizeWithoutConstraints(parent.width, height)` and verify by export.
+- When adapting the status/search component, inspect nested frames before changing dimensions. In one run, the internal search background frame named `画板 4` kept a fixed height while the surrounding status/search area was scaled, so the search bar's rounded shape rendered incorrectly. Keep that nested frame's height matched to the responsive status/search layout instead of leaving it at a copied pixel height.
+- Return JSON-safe projections or use `get_node_children` to confirm final `layoutMode`, alignment, size, and child count after layout writes.
+- Child rows can look correct in data but still clip visually after parent padding/resize changes. Export or screenshot important frames and check for clipped edges, overlapped text, and stuck-together labels.

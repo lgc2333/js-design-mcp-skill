@@ -14,7 +14,7 @@ pnpm run crawl:typings
 ## Rules
 
 - Run `pnpm run format` before work is done.
-- After using JSDesign MCP, if there are any pitfalls worth noting, record them in `skills/js-design-mcp/references/gotchas.md`.
+- After using JSDesign MCP, if there are any pitfalls worth noting, record them in `skills/js-design-mcp/references/gotchas/`. Keep these notes short. Add only reusable rules. Put probes, long examples, and session details elsewhere.
 - Use `temp` folder under this project (if there's no, create one) to store temporary output images and so on.
 - Before doing any work related to crawling official docs or typings, read `skills/js-design-mcp/references/docs-crawl-notes.md` first.
 

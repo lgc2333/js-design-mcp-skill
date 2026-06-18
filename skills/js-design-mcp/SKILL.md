@@ -1,6 +1,6 @@
 ---
 name: js-design-mcp
-description: Use before any JiShi Design (js.design) MCP action. This skill guide you how to use this properly.
+description: Use when performing JiShi Design (js.design) MCP operations, including inspecting nodes, running execute_script, creating canvas content, exporting assets, or using PluginAPI/WidgetAPI references.
 ---
 
 # JiShi Design MCP
@@ -62,6 +62,8 @@ Keep `execute_script` calls small enough to debug. Prefer splitting large edits 
 
 For visible canvas work, prefer `jsDesign.createNodeFromJSXAsync` with `jsDesign.widget.h`. It creates normal `SceneNode` trees quickly and avoids most incremental `appendChild` layout churn.
 
+Concrete widget node names available from `jsDesign.widget`: `AutoLayout`, `Frame`, `Image`, `Rectangle`, `Ellipse`, `Text`, `SVG`, `Input`, and `Line`. `Fragment` and `Span` are also declared, but `Fragment` is not a concrete canvas root and `Span` is for text children. For exact props, signatures, and examples, check the declaration file `references/official-typings/widget/index.d.ts` and the component docs under `references/official-docs/小组件 API/API 指南/组件类型/`.
+
 ```js
 try {
   const { h, AutoLayout, Text } = jsDesign.widget
@@ -87,6 +89,21 @@ Rules:
 - Created nodes are parented to `jsDesign.currentPage`; append to another parent after creation if needed.
 - Use imperative creation only for small edits, unsupported node types, post-processing, or mutations of existing nodes.
 
+## Gotchas
+
+Scan the relevant file in `references/gotchas/` before MCP operations:
+
+- `plugin-api-docs.md` - observed API/docs mismatches.
+- `jsx-node-creation.md` - declarative `createNodeFromJSXAsync` and `jsDesign.widget.h` node creation.
+- `js-node-operations.md` - imperative PluginAPI node creation, parenting, reparenting, traversal, and deletion.
+- `auto-layout-sizing.md` - auto layout, sizing, scaling, and visual layout verification pitfalls.
+- `text-styles.md` - font loading, text style links, and text mutation pitfalls.
+- `exports-assets.md` - image export, export settings, names, and asset cleanup.
+
+## Visual Verification
+
+After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads can confirm node fields, but they cannot prove what JiShi actually rendered: text may clip, auto-layout may recalculate unexpectedly, exported assets may be blank or scaled wrong, and icons can disappear even when dimensions look sane. Use visual inspection as the final source of truth for rendered output.
+
 ## Official API References
 
 Start at `references/docs-overview.md`. Use Markdown docs for concepts and examples, and typings for exact API signatures, fields, overloads, and literal values.
@@ -96,33 +113,6 @@ Start at `references/docs-overview.md`. Use Markdown docs for concepts and examp
 - Plugin typings: `references/official-typings/plugin/plugin-api.d.ts` and `references/official-typings/plugin/index.d.ts`.
 - Widget typings: `references/official-typings/widget/index.d.ts`.
 - Maintenance notes: `references/docs-crawl-notes.md`.
-
-Common entries:
-
-- Current page/selection: `jsDesign.currentPage`, `jsDesign.currentPage.selection`.
-- Find/traverse: `jsDesign.getNodeById(id)`, `findOne`, `findAll`.
-- Create/edit fallback: `createRectangle`, `createFrame`, `createText`, `appendChild`, `resize`.
-- Export/storage/UI: `exportAsync`, `clientStorage`, `showUI`, `ui.postMessage`.
-
-Prefer `jsDesign`, not `figma`. The typings expose `figma` as a compatibility alias, but JiShi docs and MCP prompts should use `jsDesign`.
-
-## Gotchas
-
-Before creating or reparenting auto-layout nodes, read `references/gotchas.md` for observed JiShi MCP pitfalls such as default current-page parenting, `appendChild` layout resets, and auto-layout size/padding recalculation.
-
-## Visual Verification
-
-After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads are not enough; clipped text and 0-width labels must be checked visually.
-
-## Other MCP Tools
-
-Keep these concise unless you have an observed result:
-
-- `list_plugin_clients`: check connection first.
-- `get_page_nodes`, `get_selection`, `get_node_children`: discovery and IDs; no selection may return `"No selection"`.
-- `save_image`, `download_icons`: export tools; environment-sensitive.
-
-Do not invent universal fields like `{ success, data }`. Tools return MCP text content, but the JSON or text inside depends on the specific tool, plugin state, and plugin version.
 
 ## Tool Return Types
 
@@ -136,9 +126,11 @@ All tools return MCP `content` text. Parse or describe the text payload from the
 - `save_image`: text status or error text; can fail for environment/path reasons.
 - `download_icons`: SVG/download/status/error text depending on selection, node IDs, and environment.
 
+Do not invent universal fields like `{ success, data }`. Tools return MCP text content, but the JSON or text inside depends on the specific tool, plugin state, and plugin version.
+
 ## References
 
-- `references/gotchas.md` - observed node creation, reparenting, auto-layout, text, style, export, and asset pitfalls.
+- `references/gotchas/` - short notes for observed JSX creation, JS node operations, layout, text, export, and API mismatch pitfalls.
 - `references/docs-crawl-notes.md` - official docs static URL list maintenance notes and crawl findings.
 - `references/docs-overview.md` - short index for official docs and typings.
 - `references/official-docs/` - 122 official docs: 70 Plugin API docs and 52 Widget API docs.

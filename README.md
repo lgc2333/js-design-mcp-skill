@@ -49,7 +49,7 @@ npx skills add lgc2333/js-design-mcp-skill
 
 - `skills/js-design-mcp/SKILL.md`：技能入口，保持短小，只放 MCP 使用规则和 reference 路由。
 - `skills/js-design-mcp/references/docs-overview.md`：官方 Markdown docs 与 typings 的 AI 索引入口。
-- `skills/js-design-mcp/references/gotchas.md`：MCP、节点创建、自动布局、文字、导出等实操坑点。
+- `skills/js-design-mcp/references/gotchas/`：按主题拆分的 MCP、JSX 创建、JS 节点操作、自动布局、文字、导出等实操坑点。
 - `skills/js-design-mcp/references/docs-crawl-notes.md`：官方 docs/typings 抓取、刷新、提升到 reference 的维护说明。
 - `skills/js-design-mcp/references/official-docs/`：按官方侧边栏整理的 122 篇 Markdown 文档，含 70 篇插件 API 与 52 篇小组件 API。
 - `skills/js-design-mcp/references/official-typings/`：官方 npm typings，含 Plugin API 与 Widget API declaration files。
