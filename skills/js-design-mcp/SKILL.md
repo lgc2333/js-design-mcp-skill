@@ -1,6 +1,6 @@
 ---
 name: js-design-mcp
-description: Use before any JiShi Design/js-design MCP action or mcp__js_design tool call, especially writing execute_script code, reading jsDesign plugin API docs, setting export settings, or interpreting MCP tool return shapes
+description: Use before any JiShi Design (js.design) MCP action. This skill guide you how to use this properly.
 ---
 
 # JiShi Design MCP
@@ -60,11 +60,11 @@ Keep `execute_script` calls small enough to debug. Prefer splitting large edits 
 
 ## Official API Docs
 
-Start at `references/official-plugin-docs/README.md`. The docs are arranged as:
+Start at `references/docs-overview.md`. The docs are arranged by the official sidebar under `references/official-docs/`:
 
-- Machine metadata: `references/official-plugin-docs/index.json`.
-- Short AI map: `references/official-plugin-docs/_indexes/README.md`.
-- Full docs: `references/official-plugin-docs/api/` and `references/official-plugin-docs/guide/`.
+- Plugin API docs: `references/official-docs/插件 API/` (70 docs).
+- Widget API docs: `references/official-docs/小组件 API/` (52 docs).
+- Static URL maintenance notes: `references/docs-crawl-notes.md`.
 
 Common entries:
 
@@ -108,5 +108,6 @@ All tools return MCP `content` text. Parse or describe the text payload from the
 ## References
 
 - `gotchas.md` - observed node creation, reparenting, and auto-layout pitfalls.
-- `references/crawl-notes.md` - official entry points and crawl findings.
-- `references/official-plugin-docs/` - 70 official docs: 59 API pages and 11 guide pages.
+- `references/docs-crawl-notes.md` - official docs static URL list maintenance notes and crawl findings.
+- `references/docs-overview.md` - short index for the 122 official docs.
+- `references/official-docs/` - 122 official docs: 70 Plugin API docs and 52 Widget API docs.

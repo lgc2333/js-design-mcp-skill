@@ -1,12 +1,17 @@
 {
   "name": "jsdesign-mcp-skill",
-  "version": "0.0.1",
-  "main": "index.js",
+  "private": true,
+  "packageManager": "pnpm@11.7.0+sha512.19cc852c120c7125760f2443ee6be0ca5b40f9f50598de1a09a1f177503e010e57c23c77646e01e761de59bf874fb22a3398c33ab9691fc13eb946b6f0f4d620",
   "license": "MIT",
   "scripts": {
+    "crawl:docs": "tsx scripts/crawl-official-docs.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
     "format": "prettier -cw ."
   },
   "devDependencies": {
-    "prettier": "^3.8.3"
+    "@types/node": "^25.9.3",
+    "prettier": "^3.8.3",
+    "tsx": "^4.20.3",
+    "typescript": "^6.0.3"
   }
 }

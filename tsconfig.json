@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2024",
+    "jsx": "react-jsx",
+    "checkJs": true,
+    "experimentalDecorators": false,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strict": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "types": ["node"]
+  },
+  "include": ["scripts", "tests"]
+}
