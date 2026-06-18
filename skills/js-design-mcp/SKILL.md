@@ -13,15 +13,17 @@ Use `execute_script` as a JiShi Design plugin-context JavaScript runner. Keep th
 
 ### New Canvas Work
 
-When creating a design from scratch, ask whether to use Auto Layout and responsive resizing. Use them unless the user explicitly refuses. If the user says not to ask questions or lets you continue, still use Auto Layout.
+When creating a design from scratch, ask whether to use auto layout and responsive adjustments. Use them unless the user explicitly refuses. If the user says not to ask questions or lets you continue, still use auto layout and responsive adjustments.
 
 Do not build fresh designs by placing many elements with absolute `x`/`y`. Define the responsive structure first; add content and decoration after it exists.
+
+Use `node.constraints` for responsive adjustment settings, useful for FAB and so on. Read constraints back after setting them.
 
 Use fixed positioning only for root placement, intentional overlays, unsupported assets, or small post-processing fixes. And scan related gotchas first.
 
 ### Small Tool Calls
 
-Keep `execute_script` calls small and focused: discovery, structure, content, assets, styling, and verification should usually be separate calls. Do not build or mutate an entire screen, asset set, or design system in one script; large scripts take longer, are harder to debug, are more likely to hit JiShi PluginAPI gotchas mid-run, and can make MCP disconnect or time out.
+JiShi PLUGIN API IS REALLY BUGGY. Keep `execute_script` calls small and focused: discovery, structure, content, assets, styling, and verification should usually be separate calls. Do not build or mutate an entire screen, asset set, or design system in one script; large scripts take longer, are harder to debug, are more likely to hit JiShi PluginAPI gotchas mid-run, and can make MCP disconnect or time out.
 
 ### Visual Verification
 
@@ -101,13 +103,13 @@ Rules:
 
 Scan the relevant file in `references/gotchas/` before MCP operations:
 
-- `plugin-api-docs.md` - observed API/docs mismatches.
 - `jsx-node-creation.md` - declarative `createNodeFromJSXAsync` and `jsDesign.widget.h` node creation.
 - `js-node-operations.md` - imperative PluginAPI node creation, parenting, reparenting, traversal, and deletion.
 - `auto-layout-sizing.md` - auto layout, sizing, scaling, and visual layout verification pitfalls.
 - `responsive-audits.md` - full-tree audits and snippets for fixed-size leftovers, clipping, and responsive repair.
 - `svg-icons.md` - external SVG/Iconify import, sizing, and cropping pitfalls.
 - `text-styles.md` - font loading, text style links, and text mutation pitfalls.
+- `effect-styles.md` - effect style creation and mutation pitfalls.
 - `exports-assets.md` - image export, export settings, names, and asset cleanup.
 
 ## Official API References
