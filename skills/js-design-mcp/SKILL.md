@@ -9,6 +9,20 @@ description: 'Use when need to call JiShi Design (js.design) MCP execute_script 
 
 Use `execute_script` as a JiShi Design plugin-context JavaScript runner. Keep three layers separate: the MCP text wrapper, the script return value, and JiShi `jsDesign` PluginAPI objects.
 
+## Please Attention
+
+### Prefer Auto Layout When Designing From Scratch
+
+When creating a design from scratch, ask user should we use auto layout and responsive resizing. Also use them if user let you continue without questions. Remember to check related gotchas.
+
+### Visual Verification
+
+After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads can confirm node fields, but they cannot prove what actually rendered: text may clip, auto-layout may recalculate unexpectedly, exported assets may be blank or scaled wrong, and icons can disappear even when dimensions look sane. Use visual inspection as the final source of truth for rendered output.
+
+### Small Tool Calls
+
+Keep `execute_script` calls small enough to debug. Prefer splitting large edits into focused discovery, mutation, and verification calls. Breaking work into pieces also avoids long broker timeouts and makes partial failures traceable instead of leaving you unsure which operations completed.
+
 ## execute_script Rules
 
 `code` is a function body executed in the JiShi plugin context. `jsDesign` is the global PluginAPI object. The server wraps most plugin results as MCP text: `content[0].text = JSON.stringify(result, null, 2)`.
@@ -48,11 +62,7 @@ Return only strings, numbers, booleans, null, arrays, and plain objects. Avoid `
 
 Use `{ ok: true, ... }` for success and `{ ok: false, name, message, stack }` for failures so callers can distinguish script errors from MCP transport errors.
 
-Keep `execute_script` calls small enough to debug. Prefer splitting large edits into focused discovery, mutation, and verification calls. Breaking work into pieces also avoids long broker timeouts and makes partial failures traceable instead of leaving you unsure which operations completed.
-
 ## Canvas Creation
-
-NOTE: When creating a page from scratch, first ask the user whether to use auto layout unless they have already specified or asked you to proceed without questions. If the user explicitly says no, use manual positioning. Otherwise, prefer auto layout and responsive sizing changes for the main structure. Remember to check gotchas for auto layout and responsive design.
 
 For visible canvas work, prefer `jsDesign.createNodeFromJSXAsync` with `jsDesign.widget.h`. It creates normal `SceneNode` trees quickly and avoids most incremental `appendChild` layout churn.
 
@@ -79,13 +89,9 @@ try {
 Rules:
 
 - Use a single concrete root (`AutoLayout`, `Frame`, etc.); avoid multi-root `Fragment`.
-- In MCP scripts, use `jsDesign.widget.h(...)`, not TSX literals.
+- In MCP scripts, use `jsDesign.widget.h(...)`, not JSX literals.
 - Created nodes are parented to `jsDesign.currentPage`; append to another parent after creation if needed.
 - Use imperative creation only for small edits, unsupported node types, post-processing, or mutations of existing nodes.
-
-## Visual Verification
-
-After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads can confirm node fields, but they cannot prove what JiShi actually rendered: text may clip, auto-layout may recalculate unexpectedly, exported assets may be blank or scaled wrong, and icons can disappear even when dimensions look sane. Use visual inspection as the final source of truth for rendered output.
 
 ## Gotchas
 
