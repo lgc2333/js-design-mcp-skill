@@ -9,19 +9,23 @@ description: 'Use when need to call JiShi Design (js.design) MCP execute_script 
 
 Use `execute_script` as a JiShi Design plugin-context JavaScript runner. Keep three layers separate: the MCP text wrapper, the script return value, and JiShi `jsDesign` PluginAPI objects.
 
-## Please Attention
+## IMPORTANT: Please Attention
 
-### Prefer Auto Layout When Designing From Scratch
+### New Canvas Work
 
-When creating a design from scratch, ask user should we use auto layout and responsive resizing. Also use them if user let you continue without questions. Remember to check related gotchas.
+When creating a design from scratch, ask whether to use Auto Layout and responsive resizing. Use them unless the user explicitly refuses. If the user says not to ask questions or lets you continue, still use Auto Layout.
+
+Do not build fresh designs by placing many elements with absolute `x`/`y`. Define the responsive structure first; add content and decoration after it exists.
+
+Use fixed positioning only for root placement, intentional overlays, unsupported assets, or small post-processing fixes. And scan related gotchas first.
+
+### Small Tool Calls
+
+Keep `execute_script` calls small and focused: discovery, structure, content, assets, styling, and verification should usually be separate calls. Do not build or mutate an entire screen, asset set, or design system in one script; large scripts take longer, are harder to debug, are more likely to hit JiShi PluginAPI gotchas mid-run, and can make MCP disconnect or time out.
 
 ### Visual Verification
 
 After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads can confirm node fields, but they cannot prove what actually rendered: text may clip, auto-layout may recalculate unexpectedly, exported assets may be blank or scaled wrong, and icons can disappear even when dimensions look sane. Use visual inspection as the final source of truth for rendered output.
-
-### Small Tool Calls
-
-Keep `execute_script` calls small enough to debug. Prefer splitting large edits into focused discovery, mutation, and verification calls. Breaking work into pieces also avoids long broker timeouts and makes partial failures traceable instead of leaving you unsure which operations completed.
 
 ## execute_script Rules
 
