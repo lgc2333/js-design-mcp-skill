@@ -23,7 +23,17 @@ const DEFAULT_HEADERS = {
   'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 ' + '(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
 }
 
-export async function crawlOfficialDocs({ docs, outDir, fetchImpl = fetch, keep = false }: { docs: readonly OfficialDocEntry[]; outDir: string; fetchImpl?: FetchLike; keep?: boolean }): Promise<CrawlResult[]> {
+export async function crawlOfficialDocs({
+  docs,
+  outDir,
+  fetchImpl = fetch,
+  keep = false,
+}: {
+  docs: readonly OfficialDocEntry[]
+  outDir: string
+  fetchImpl?: FetchLike
+  keep?: boolean
+}): Promise<CrawlResult[]> {
   if (!keep) {
     await rm(outDir, { force: true, recursive: true })
   }

@@ -834,7 +834,8 @@ interface PublishableMixin {
 
 interface DefaultShapeMixin extends BaseNodeMixin, SceneNodeMixin, ReactionMixin, BlendMixin, GeometryMixin, LayoutMixin, ExportMixin {}
 
-interface BaseFrameMixin extends BaseNodeMixin, SceneNodeMixin, ChildrenMixin, ContainerMixin, GeometryMixin, CornerMixin, RectangleCornerMixin, BlendMixin, ConstraintMixin, LayoutMixin, ExportMixin {
+interface BaseFrameMixin
+  extends BaseNodeMixin, SceneNodeMixin, ChildrenMixin, ContainerMixin, GeometryMixin, CornerMixin, RectangleCornerMixin, BlendMixin, ConstraintMixin, LayoutMixin, ExportMixin {
   layoutMode: 'NONE' | 'HORIZONTAL' | 'VERTICAL'
   primaryAxisSizingMode: 'FIXED' | 'AUTO' // applicable only if layoutMode != "NONE"
   counterAxisSizingMode: 'FIXED' | 'AUTO' // applicable only if layoutMode != "NONE"
@@ -920,7 +921,11 @@ interface TextSublayerNode {
   setRangeListOptions(start: number, end: number, value: TextListOptions): void
   getRangeIndentation(start: number, end: number): number | PluginAPI['mixed']
   setRangeIndentation(start: number, end: number, value: number): void
-  getStyledTextSegments<StyledTextSegmentFields extends (keyof Omit<StyledTextSegment, 'characters' | 'start' | 'end'>)[]>(fields: StyledTextSegmentFields, start?: number, end?: number): Array<Pick<StyledTextSegment, StyledTextSegmentFields[number] | 'characters' | 'start' | 'end'>>
+  getStyledTextSegments<StyledTextSegmentFields extends (keyof Omit<StyledTextSegment, 'characters' | 'start' | 'end'>)[]>(
+    fields: StyledTextSegmentFields,
+    start?: number,
+    end?: number,
+  ): Array<Pick<StyledTextSegment, StyledTextSegmentFields[number] | 'characters' | 'start' | 'end'>>
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1069,7 +1074,21 @@ interface LayerSublayerNode {
 
 type BaseNode = DocumentNode | PageNode | SceneNode
 
-type SceneNode = SliceNode | FrameNode | GroupNode | ComponentSetNode | ComponentNode | InstanceNode | BooleanOperationNode | VectorNode | StarNode | LineNode | EllipseNode | PolygonNode | RectangleNode | TextNode
+type SceneNode =
+  | SliceNode
+  | FrameNode
+  | GroupNode
+  | ComponentSetNode
+  | ComponentNode
+  | InstanceNode
+  | BooleanOperationNode
+  | VectorNode
+  | StarNode
+  | LineNode
+  | EllipseNode
+  | PolygonNode
+  | RectangleNode
+  | TextNode
 
 type NodeType = BaseNode['type']
 

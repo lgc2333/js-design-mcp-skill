@@ -149,7 +149,13 @@ declare global {
     name?: string
   }
 
-  type WidgetPropertyMenuItem = WidgetPropertyMenuActionItem | WidgetPropertyMenuSeparatorItem | WidgetPropertyMenuColorItem | WidgetPropertyMenuDropdownItem | WidgetPropertyMenuToggleItem | WidgetPropertyMenuLinkItem
+  type WidgetPropertyMenuItem =
+    | WidgetPropertyMenuActionItem
+    | WidgetPropertyMenuSeparatorItem
+    | WidgetPropertyMenuColorItem
+    | WidgetPropertyMenuDropdownItem
+    | WidgetPropertyMenuToggleItem
+    | WidgetPropertyMenuLinkItem
 
   type WidgetPropertyMenu = WidgetPropertyMenuItem[]
   type WidgetPropertyEvent = {
@@ -236,7 +242,23 @@ declare global {
     }
 
     export type AlignItems = 'center' | 'start' | 'end' | 'baseline'
-    export type BlendMode = 'normal' | 'multiply' | 'screen' | 'overlay' | 'darken' | 'lighten' | 'color-dodge' | 'color-burn' | 'hard-light' | 'soft-light' | 'difference' | 'exclusion' | 'hue' | 'saturation' | 'color' | 'luminosity'
+    export type BlendMode =
+      | 'normal'
+      | 'multiply'
+      | 'screen'
+      | 'overlay'
+      | 'darken'
+      | 'lighten'
+      | 'color-dodge'
+      | 'color-burn'
+      | 'hard-light'
+      | 'soft-light'
+      | 'difference'
+      | 'exclusion'
+      | 'hue'
+      | 'saturation'
+      | 'color'
+      | 'luminosity'
 
     export type PaintType = 'image' | 'solid' | 'gradient-linear' | 'gradient-radial' | 'gradient-angular' | 'gradient-diamond'
 

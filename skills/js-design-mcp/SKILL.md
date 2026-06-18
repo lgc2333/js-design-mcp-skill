@@ -65,7 +65,12 @@ For visible canvas work, prefer `jsDesign.createNodeFromJSXAsync` with `jsDesign
 ```js
 try {
   const { h, AutoLayout, Text } = jsDesign.widget
-  const el = h(AutoLayout, { name: 'Card', direction: 'vertical', spacing: 8, padding: 16, width: 320, fill: '#FFFFFF' }, h(Text, { fontSize: 20, fontWeight: 700, fill: '#111827' }, 'Title'), h(Text, { width: 'fill-parent', fill: '#6B7280' }, 'Body copy'))
+  const el = h(
+    AutoLayout,
+    { name: 'Card', direction: 'vertical', spacing: 8, padding: 16, width: 320, fill: '#FFFFFF' },
+    h(Text, { fontSize: 20, fontWeight: 700, fill: '#111827' }, 'Title'),
+    h(Text, { width: 'fill-parent', fill: '#6B7280' }, 'Body copy'),
+  )
   const node = await jsDesign.createNodeFromJSXAsync(el)
   node.x = 80
   node.y = 80

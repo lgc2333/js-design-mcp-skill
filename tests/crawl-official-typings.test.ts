@@ -90,7 +90,12 @@ describe('crawlOfficialTypings', () => {
         },
       })
 
-      assert.deepEqual(seenUrls, ['https://registry.npmjs.org/@jsdesigndeveloper%2Fplugin-typings', 'https://example.test/plugin.tgz', 'https://registry.npmjs.org/@jsdesigndeveloper%2Fwidget-typings', 'https://example.test/widget.tgz'])
+      assert.deepEqual(seenUrls, [
+        'https://registry.npmjs.org/@jsdesigndeveloper%2Fplugin-typings',
+        'https://example.test/plugin.tgz',
+        'https://registry.npmjs.org/@jsdesigndeveloper%2Fwidget-typings',
+        'https://example.test/widget.tgz',
+      ])
       assert.deepEqual(
         results.map((result) => [result.kind, result.files.map((file) => file.path)]),
         [
@@ -99,8 +104,14 @@ describe('crawlOfficialTypings', () => {
         ],
       )
 
-      assert.equal(await readFile(path.join(outDir, 'plugin', 'plugin-api.d.ts'), 'utf8'), ['// Crawl-Date: 2026-06-18', '// Package: @jsdesigndeveloper/plugin-typings', '// Version: 1.2.3', '', 'interface PluginAPI {}', ''].join('\n'))
-      assert.equal(await readFile(path.join(outDir, 'widget', 'index.d.ts'), 'utf8'), ['// Crawl-Date: 2026-06-18', '// Package: @jsdesigndeveloper/widget-typings', '// Version: 1.2.4', '', 'declare namespace JSX {}', ''].join('\n'))
+      assert.equal(
+        await readFile(path.join(outDir, 'plugin', 'plugin-api.d.ts'), 'utf8'),
+        ['// Crawl-Date: 2026-06-18', '// Package: @jsdesigndeveloper/plugin-typings', '// Version: 1.2.3', '', 'interface PluginAPI {}', ''].join('\n'),
+      )
+      assert.equal(
+        await readFile(path.join(outDir, 'widget', 'index.d.ts'), 'utf8'),
+        ['// Crawl-Date: 2026-06-18', '// Package: @jsdesigndeveloper/widget-typings', '// Version: 1.2.4', '', 'declare namespace JSX {}', ''].join('\n'),
+      )
 
       const manifest = JSON.parse(await readFile(path.join(outDir, 'crawl-manifest.json'), 'utf8'))
       assert.equal(manifest.capturedAt, '2026-06-18')

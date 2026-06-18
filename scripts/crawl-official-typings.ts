@@ -52,7 +52,21 @@ export const OFFICIAL_TYPINGS_PACKAGES: readonly TypingsPackage[] = [
   },
 ]
 
-export async function crawlOfficialTypings({ packages = OFFICIAL_TYPINGS_PACKAGES, outDir, fetchImpl = fetch, keep = false, extractor = extractDeclarationFilesWith7z, capturedAt = new Date().toISOString().slice(0, 10) }: { packages?: readonly TypingsPackage[]; outDir: string; fetchImpl?: FetchLike; keep?: boolean; extractor?: Extractor; capturedAt?: string }): Promise<TypingsCrawlResult[]> {
+export async function crawlOfficialTypings({
+  packages = OFFICIAL_TYPINGS_PACKAGES,
+  outDir,
+  fetchImpl = fetch,
+  keep = false,
+  extractor = extractDeclarationFilesWith7z,
+  capturedAt = new Date().toISOString().slice(0, 10),
+}: {
+  packages?: readonly TypingsPackage[]
+  outDir: string
+  fetchImpl?: FetchLike
+  keep?: boolean
+  extractor?: Extractor
+  capturedAt?: string
+}): Promise<TypingsCrawlResult[]> {
   if (!keep) {
     await rm(outDir, { force: true, recursive: true })
   }
