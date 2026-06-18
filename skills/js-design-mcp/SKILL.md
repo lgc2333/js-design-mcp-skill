@@ -52,6 +52,8 @@ Keep `execute_script` calls small enough to debug. Prefer splitting large edits 
 
 ## Canvas Creation
 
+NOTE: When creating a page from scratch, first ask the user whether to use auto layout unless they have already specified or asked you to proceed without questions. If the user explicitly says no, use manual positioning. Otherwise, prefer auto layout and responsive sizing changes for the main structure. Remember to check gotchas for auto layout and responsive design.
+
 For visible canvas work, prefer `jsDesign.createNodeFromJSXAsync` with `jsDesign.widget.h`. It creates normal `SceneNode` trees quickly and avoids most incremental `appendChild` layout churn.
 
 Concrete widget node names available from `jsDesign.widget`: `AutoLayout`, `Frame`, `Image`, `Rectangle`, `Ellipse`, `Text`, `SVG`, `Input`, and `Line`. `Fragment` and `Span` are also declared, but `Fragment` is not a concrete canvas root and `Span` is for text children. For exact props, signatures, and examples, check the declaration file `references/official-typings/widget/index.d.ts` and the component docs under `references/official-docs/小组件 API/API 指南/组件类型/`.
@@ -79,7 +81,6 @@ Rules:
 - Use a single concrete root (`AutoLayout`, `Frame`, etc.); avoid multi-root `Fragment`.
 - In MCP scripts, use `jsDesign.widget.h(...)`, not TSX literals.
 - Created nodes are parented to `jsDesign.currentPage`; append to another parent after creation if needed.
-- When creating a page from scratch, prefer auto layout and responsive sizing changes over manual absolute positioning for the main structure.
 - Use imperative creation only for small edits, unsupported node types, post-processing, or mutations of existing nodes.
 
 ## Visual Verification
@@ -109,10 +110,6 @@ Start at `references/docs-overview.md`. Use Markdown docs for concepts and examp
 - Widget typings: `references/official-typings/widget/index.d.ts`.
 - Maintenance notes: `references/docs-crawl-notes.md`.
 
-## References
+## Other References
 
-- `references/gotchas/`
 - `references/docs-crawl-notes.md` - official docs static URL list maintenance notes and crawl findings.
-- `references/docs-overview.md` - short index for official docs and typings.
-- `references/official-docs/` - 122 official docs: 70 Plugin API docs and 52 Widget API docs.
-- `references/official-typings/` - official npm declaration files for Plugin API and Widget API.
