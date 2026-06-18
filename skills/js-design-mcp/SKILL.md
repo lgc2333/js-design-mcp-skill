@@ -103,13 +103,11 @@ Rules:
 
 Scan the relevant file in `references/gotchas/` before MCP operations:
 
-- `jsx-node-creation.md` - declarative `createNodeFromJSXAsync` and `jsDesign.widget.h` node creation.
-- `js-node-operations.md` - imperative PluginAPI node creation, parenting, reparenting, traversal, and deletion.
+- `js-jsx-node-operations.md` - declarative JSX creation plus imperative PluginAPI creation, parenting, traversal, and deletion.
 - `auto-layout-sizing.md` - auto layout, sizing, scaling, and visual layout verification pitfalls.
 - `responsive-audits.md` - full-tree audits and snippets for fixed-size leftovers, clipping, and responsive repair.
-- `svg-icons.md` - external SVG/Iconify import, sizing, and cropping pitfalls.
-- `text-styles.md` - font loading, text style links, and text mutation pitfalls.
-- `effect-styles.md` - effect style creation and mutation pitfalls.
+- `external-resources.md` - external SVG/Iconify and bitmap resource import, rendering, sizing, and export pitfalls.
+- `styles.md` - text style, font loading, text mutation, letter spacing, and effect style pitfalls.
 - `exports-assets.md` - image export, export settings, names, and asset cleanup.
 
 ## Official API References

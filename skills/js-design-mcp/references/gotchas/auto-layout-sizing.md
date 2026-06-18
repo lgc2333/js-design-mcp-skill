@@ -1,6 +1,6 @@
 # Auto Layout and Sizing Gotchas
 
-CAUTION: Responsive layout parameters need repeated verification. Read back `layoutGrow`, `layoutAlign`, `primaryAxisSizingMode`, and `counterAxisSizingMode` after initial writes, after repair passes, and again after export/visual fixes; reparenting, resizing, and auto-layout recalculation can silently change them. See `responsive-audits.md`.
+CAUTION: Responsive layout parameters need repeated verification. Read back `layoutGrow`, `layoutAlign`, `primaryAxisSizingMode`, and `counterAxisSizingMode` after initial writes, after repair passes, and again after export/visual fixes; reparenting, resizing, and auto-layout recalculation can silently change them. Please see `responsive-audits.md`.
 
 - Enabling or changing auto layout can recalculate size. If exact dimensions matter, set layout fields, call `resize()`, then read back `width`/`height`.
 - When creating auto-layout pages from scratch, set layout fields first, then `resizeWithoutConstraints()` and read back size. Some JSX `AutoLayout` frames without explicit dimensions land as 100x100 and clip children until resized after layout setup.
