@@ -2,7 +2,7 @@
 
 Captured from official JiShi Design documentation on 2026-06-18.
 
-Use this as the short map before opening full docs. Files are under `official-docs/` and arranged by the official sidebar.
+Use this as the short map before opening full docs or typings. Markdown docs are under `official-docs/` and arranged by the official sidebar. Declaration files are under `official-typings/`.
 
 ## Scope
 
@@ -10,7 +10,10 @@ Use this as the short map before opening full docs. Files are under `official-do
 - Widget API docs: 52 files under `official-docs/小组件 API/`.
 - Total: 122 Markdown files.
 
-The source URL list is static. Read `docs-crawl-notes.md` before refreshing or reorganizing docs.
+- Plugin typings: `official-typings/plugin/plugin-api.d.ts` and `official-typings/plugin/index.d.ts`.
+- Widget typings: `official-typings/widget/index.d.ts`.
+
+The Markdown source URL list is static. Typings come from official npm packages.
 
 ## High-Value Starting Points
 
@@ -31,6 +34,8 @@ The source URL list is static. Read `docs-crawl-notes.md` before refreshing or r
 - Plugin API guide: 59 docs under `official-docs/插件 API/API 指南/`.
 - Widget developer docs: 13 docs under `official-docs/小组件 API/开发者文档/`.
 - Widget API guide: 39 docs under `official-docs/小组件 API/API 指南/`.
+- Plugin declaration files: `official-typings/plugin/`.
+- Widget declaration files: `official-typings/widget/`.
 
 ## Common Lookup
 
@@ -38,3 +43,4 @@ The source URL list is static. Read `docs-crawl-notes.md` before refreshing or r
 - Traverse document: open plugin docs for `jsDesign`, `DocumentNode`, `PageNode`, and relevant node types.
 - Build widgets: open widget docs for `jsDesign.widget`, component types, hooks, and `widgetSyncedState`.
 - Use MCP `execute_script`: prefer docs for `jsDesign`, `PageNode`, node creation methods, and JSON-safe manual projection.
+- Confirm exact property names, unions, and overloads: open `official-typings/plugin/plugin-api.d.ts` for Plugin API or `official-typings/widget/index.d.ts` for Widget API.

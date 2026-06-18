@@ -2,11 +2,11 @@
 
 Date: 2026-06-18
 
-Read this file before doing any work related to crawling, refreshing, or reorganizing official docs.
+Read this file before doing any work related to crawling, refreshing, or reorganizing official docs or official typings.
 
 ## Current Model
 
-The official docs crawler is intentionally static.
+The official Markdown docs crawler is intentionally static.
 
 - `scripts/official-docs-list.ts` is the URL index. It contains the pre-resolved `title`, raw Markdown `url`, and output `path` for each page.
 - `scripts/crawl-official-docs.ts` does not discover docs and does not query CMS endpoints. It only fetches the URLs listed in `official-docs-list.ts`, writes each response to its matching path, and creates `crawl-manifest.json`.
@@ -14,12 +14,22 @@ The official docs crawler is intentionally static.
 
 This means `npm run crawl:docs` is reproducible for the current static list, but it is not an automatic "latest docs" updater.
 
+The official typings crawler is package-based:
+
+- `scripts/crawl-official-typings.ts` fetches npm metadata for `@jsdesigndeveloper/plugin-typings` and `@jsdesigndeveloper/widget-typings`.
+- It downloads the latest package tarballs, extracts `.d.ts` files with `7z`, writes crawl metadata headers, and creates `crawl-manifest.json`.
+- `npm run crawl:typings` defaults to `temp/official-typings/`. It does not automatically promote output into the skill references.
+
 ## Current Local Layout
 
 - `scripts/official-docs-list.ts` - static list of 122 docs, covering Plugin API and Widget API pages from the sidebar entries in `temp/doc-list.md`.
 - `scripts/crawl-official-docs.ts` - fetch-only crawler that consumes the static list.
+- `scripts/crawl-official-typings.ts` - npm typings crawler for plugin and widget declaration packages.
 - `temp/official-docs/` - generated crawl output and `crawl-manifest.json`.
+- `temp/official-typings/` - generated typings output and `crawl-manifest.json`.
 - `skills/js-design-mcp/references/official-docs/` - skill reference docs when the generated docs are promoted into the skill.
+- `skills/js-design-mcp/references/official-typings/` - skill reference typings when the generated typings are promoted into the skill.
+- `skills/js-design-mcp/references/gotchas.md` - reusable JiShi MCP runtime pitfalls discovered while using the tool.
 - `skills/js-design-mcp/references/docs-crawl-notes.md` - this maintenance note.
 
 ## Official Entry Points
@@ -33,6 +43,7 @@ This means `npm run crawl:docs` is reproducible for the current static list, but
 - MCP server package: <https://www.npmjs.com/package/@jiujiang/jishi-mcp-server>
 - MCP plugin page: <https://js.design/community?category=detail&type=plugin&id=6974f39f0aebe8c71f2bb18c>
 - Plugin typings: <https://www.npmjs.com/package/@jsdesigndeveloper/plugin-typings>
+- Widget typings: <https://www.npmjs.com/package/@jsdesigndeveloper/widget-typings>
 
 ## How To Refresh The Static URL List
 
@@ -55,6 +66,22 @@ npm run crawl:docs
 npm test
 npm run format
 ```
+
+## How To Refresh Official Typings
+
+1. Ensure `7z` is available on `PATH`; install 7-Zip or NanaZip if needed.
+2. Run:
+   ```powershell
+   npm run crawl:typings
+   ```
+3. Inspect `temp/official-typings/crawl-manifest.json` for package versions and file lists.
+4. Promote the generated `plugin/` and `widget/` directories into `skills/js-design-mcp/references/official-typings/` when the update is intentional.
+5. Run:
+   ```powershell
+   npm run check
+   npm test
+   npm run format
+   ```
 
 ## Fetching Details
 

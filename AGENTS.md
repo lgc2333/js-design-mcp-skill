@@ -1,11 +1,22 @@
 # AGENTS.md
 
+## Commands
+
+```bash
+pnpm run format  # Prettier
+pnpm run check  # Type check
+pnpm run test  # Unit tests
+
+pnpm run crawl:docs
+pnpm run crawl:typings
+```
+
 ## Rules
 
-- Run `npm run format` before work is done.
-- After using JSDesign MCP, if there are any pitfalls worth noting, record them in gotchas.md.
+- Run `pnpm run format` before work is done.
+- After using JSDesign MCP, if there are any pitfalls worth noting, record them in `skills/js-design-mcp/references/gotchas.md`.
 - Use `temp` folder under this project (if there's no, create one) to store temporary output images and so on.
-- Before doing any work related to crawling official docs, read `skills/js-design-mcp/references/docs-crawl-notes.md` first.
+- Before doing any work related to crawling official docs or typings, read `skills/js-design-mcp/references/docs-crawl-notes.md` first.
 
 ## Note
 

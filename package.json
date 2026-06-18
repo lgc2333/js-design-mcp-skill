@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "crawl:docs": "tsx scripts/crawl-official-docs.ts",
+    "crawl:typings": "tsx scripts/crawl-official-typings.ts",
     "test": "node --import tsx --test tests/*.test.ts",
+    "check": "tsc -b",
     "format": "prettier -cw ."
   },
   "devDependencies": {

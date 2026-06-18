@@ -58,26 +58,52 @@ Use `{ ok: true, ... }` for success and `{ ok: false, name, message, stack }` fo
 
 Keep `execute_script` calls small enough to debug. Prefer splitting large edits into focused discovery, mutation, and verification calls.
 
-## Official API Docs
+## Canvas Creation
 
-Start at `references/docs-overview.md`. The docs are arranged by the official sidebar under `references/official-docs/`:
+For visible canvas work, prefer `jsDesign.createNodeFromJSXAsync` with `jsDesign.widget.h`. It creates normal `SceneNode` trees quickly and avoids most incremental `appendChild` layout churn.
+
+```js
+try {
+  const { h, AutoLayout, Text } = jsDesign.widget
+  const el = h(AutoLayout, { name: 'Card', direction: 'vertical', spacing: 8, padding: 16, width: 320, fill: '#FFFFFF' }, h(Text, { fontSize: 20, fontWeight: 700, fill: '#111827' }, 'Title'), h(Text, { width: 'fill-parent', fill: '#6B7280' }, 'Body copy'))
+  const node = await jsDesign.createNodeFromJSXAsync(el)
+  node.x = 80
+  node.y = 80
+  return { ok: true, id: node.id, name: node.name, type: node.type, width: node.width, height: node.height }
+} catch (error) {
+  return { ok: false, name: error && error.name, message: error && error.message, stack: error && error.stack }
+}
+```
+
+Rules:
+
+- Use a single concrete root (`AutoLayout`, `Frame`, etc.); avoid multi-root `Fragment`.
+- In MCP scripts, use `jsDesign.widget.h(...)`, not TSX literals.
+- Created nodes are parented to `jsDesign.currentPage`; append to another parent after creation if needed.
+- Use imperative creation only for small edits, unsupported node types, post-processing, or mutations of existing nodes.
+
+## Official API References
+
+Start at `references/docs-overview.md`. Use Markdown docs for concepts and examples, and typings for exact API signatures, fields, overloads, and literal values.
 
 - Plugin API docs: `references/official-docs/插件 API/` (70 docs).
 - Widget API docs: `references/official-docs/小组件 API/` (52 docs).
-- Static URL maintenance notes: `references/docs-crawl-notes.md`.
+- Plugin typings: `references/official-typings/plugin/plugin-api.d.ts` and `references/official-typings/plugin/index.d.ts`.
+- Widget typings: `references/official-typings/widget/index.d.ts`.
+- Maintenance notes: `references/docs-crawl-notes.md`.
 
 Common entries:
 
 - Current page/selection: `jsDesign.currentPage`, `jsDesign.currentPage.selection`.
 - Find/traverse: `jsDesign.getNodeById(id)`, `findOne`, `findAll`.
-- Create/edit: `createRectangle`, `createFrame`, `createText`, `appendChild`, `resize`; append visible new nodes to `jsDesign.currentPage` or a specified parent before returning fields.
+- Create/edit fallback: `createRectangle`, `createFrame`, `createText`, `appendChild`, `resize`.
 - Export/storage/UI: `exportAsync`, `clientStorage`, `showUI`, `ui.postMessage`.
 
 Prefer `jsDesign`, not `figma`. The typings expose `figma` as a compatibility alias, but JiShi docs and MCP prompts should use `jsDesign`.
 
 ## Gotchas
 
-Before creating or reparenting auto-layout nodes, read `gotchas.md` for observed JiShi MCP pitfalls such as default current-page parenting, `appendChild` layout resets, and auto-layout size/padding recalculation.
+Before creating or reparenting auto-layout nodes, read `references/gotchas.md` for observed JiShi MCP pitfalls such as default current-page parenting, `appendChild` layout resets, and auto-layout size/padding recalculation.
 
 ## Visual Verification
 
@@ -107,7 +133,8 @@ All tools return MCP `content` text. Parse or describe the text payload from the
 
 ## References
 
-- `gotchas.md` - observed node creation, reparenting, and auto-layout pitfalls.
+- `references/gotchas.md` - observed node creation, reparenting, auto-layout, text, style, export, and asset pitfalls.
 - `references/docs-crawl-notes.md` - official docs static URL list maintenance notes and crawl findings.
-- `references/docs-overview.md` - short index for the 122 official docs.
+- `references/docs-overview.md` - short index for official docs and typings.
 - `references/official-docs/` - 122 official docs: 70 Plugin API docs and 52 Widget API docs.
+- `references/official-typings/` - official npm declaration files for Plugin API and Widget API.

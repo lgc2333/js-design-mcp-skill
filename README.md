@@ -27,6 +27,7 @@ npx skills add lgc2333/js-design-mcp-skill
 - 避免返回 raw node、`undefined`、循环对象等不适合 JSON 序列化的数据。
 - 用统一的 `{ ok: true, ... }` / `{ ok: false, name, message }` 结构表达脚本执行结果。
 - 在本地快速检索已整理的即时设计官方插件和小组件 API 文档。
+- 查询官方 typings，确认准确字段、类型、联合值和方法签名。
 
 ## 推荐使用方式
 
@@ -46,42 +47,19 @@ npx skills add lgc2333/js-design-mcp-skill
 
 ## 目录说明
 
-- `skills/js-design-mcp/SKILL.md`：技能入口，保持短小，供 Agent 加载后直接执行。
-- `skills/js-design-mcp/references/docs-overview.md`：官方文档 AI 索引入口。
-- `skills/js-design-mcp/references/docs-crawl-notes.md`：官方文档抓取入口、静态 URL 清单维护方式、坑点和补全记录。
-- `skills/js-design-mcp/references/official-docs/`：按官方侧边栏整理的插件 API 和小组件 API 文档。
-- `skills/js-design-mcp/tests/pressure-scenarios.md`：按 writing-skills/TDD 方式记录的压力场景和红绿测试结果。
-
-## 官方文档索引
-
-官方文档整理在 `skills/js-design-mcp/references/official-docs/`，按官方侧边栏分为 `插件 API/` 和 `小组件 API/`。
-
-- `docs-overview.md`：AI 友好的短上下文入口。
-- `official-docs/插件 API/`：插件开发者文档与 API 指南，共 70 篇。
-- `official-docs/小组件 API/`：小组件开发者文档与 API 指南，共 52 篇。
-
-Agent 需要精确找文档时，先看 `docs-overview.md`，再打开 `official-docs/` 下对应正文文件。
-
-## 使用要点
-
-- 调用 `execute_script` 前先用 `list_plugin_clients` 确认即时设计插件已连接。
-- 每个 `execute_script` 脚本体都必须包 `try/catch`。
-- 成功返回 `{ ok: true, ... }`，失败返回 `{ ok: false, name, message }`。
-- 不要返回 raw node；手动投影成 JSON-safe 字段。
-- 非 `execute_script` 工具的返回结构以当次 MCP text payload 为准，不要猜统一的 `{ success, data }`。
+- `skills/js-design-mcp/SKILL.md`：技能入口，保持短小，只放 MCP 使用规则和 reference 路由。
+- `skills/js-design-mcp/references/docs-overview.md`：官方 Markdown docs 与 typings 的 AI 索引入口。
+- `skills/js-design-mcp/references/gotchas.md`：MCP、节点创建、自动布局、文字、导出等实操坑点。
+- `skills/js-design-mcp/references/docs-crawl-notes.md`：官方 docs/typings 抓取、刷新、提升到 reference 的维护说明。
+- `skills/js-design-mcp/references/official-docs/`：按官方侧边栏整理的 122 篇 Markdown 文档，含 70 篇插件 API 与 52 篇小组件 API。
+- `skills/js-design-mcp/references/official-typings/`：官方 npm typings，含 Plugin API 与 Widget API declaration files。
 
 ## 维护与验证
 
-格式化：
+- `pnpm run crawl:docs`：从静态 URL 清单抓取官方 Markdown docs，默认写入 `temp/official-docs/`。
+- `pnpm run crawl:typings`：从官方 npm typings 包抓取 `.d.ts`，需要 `7z`，默认写入 `temp/official-typings/`。
+- `pnpm run check`：TypeScript type check。
+- `pnpm run test`：crawler 单元测试。
+- `pnpm run format`：Prettier 格式化。
 
-```powershell
-npm run format
-```
-
-常用完整性检查：
-
-```powershell
-node -e "const fs=require('fs'),path=require('path');function c(d){return fs.readdirSync(d,{withFileTypes:true}).reduce((n,e)=>n+(e.isDirectory()?c(path.join(d,e.name)):e.name.endsWith('.md')?1:0),0)} console.log(c('skills/js-design-mcp/references/official-docs'))"
-```
-
-当前官方文档数量应为 122 条。
+刷新 docs 或 typings 后，确认输出无误，再把生成结果提升到 `skills/js-design-mcp/references/` 下对应目录。
