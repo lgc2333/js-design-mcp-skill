@@ -1,125 +1,87 @@
 ---
 name: js-design-mcp
-description: 'Use when need to call JiShi Design (js.design) MCP execute_script or write plugin-context JavaScript; simple read operations do not require this skill. Note: Check connection with list_plugin_clients first before calling any tool.'
+description: Use when a task involves JiShi Design/js.design canvas work through 九匠即时MCP, jishi-design MCP, or jsDesign PluginAPI.
 ---
 
 # JiShi Design MCP
 
-## Overview
+Use the `jishi-design` MCP server to read, export, and modify JiShi Design canvases.
 
-Use `execute_script` as a JiShi Design plugin-context JavaScript runner. Keep three layers separate: the MCP text wrapper, the script return value, and JiShi `jsDesign` PluginAPI objects.
+## First Step
 
-## IMPORTANT: Please Attention
+Call `list_plugin_clients` before other tools. If no client is connected, ask the user to open the `九匠即时MCP` plugin in JiShi Design and confirm it shows connected.
 
-### New Canvas Work
+If multiple clients are connected, choose by `info.docName` and pass that `clientId` to every later tool. Without `clientId`, tools use the first online client.
 
-When creating a design from scratch, ask whether to use auto layout and responsive adjustments. Use them unless the user explicitly refuses. If the user says not to ask questions or lets you continue, still use auto layout and responsive adjustments.
+## Standard Flow
 
-Do not build fresh designs by placing many elements with absolute `x`/`y`. Define the responsive structure first; add content and decoration after it exists.
+1. Discover top-level frames with `get_page_nodes`.
+2. Drill into the target with `get_node_children` by `id` or `name`, or `get_selection` when the user selected nodes.
+3. Export with `save_image` or `download_icons`, or modify with `execute_script`.
 
-Use `node.constraints` for responsive adjustment settings, useful for FAB and so on. Read constraints back after setting them.
+Do not pull an entire large tree first. Probe with shallow `maxDepth`, then drill into specific child ids.
 
-Use fixed positioning only for root placement, intentional overlays, unsupported assets, or small post-processing fixes. And scan related gotchas first.
+## Tool Routing
 
-### Small Tool Calls
+- `list_plugin_clients`: list connected JiShi documents.
+- `get_page_nodes`: list current page top-level nodes; no parameters.
+- `get_selection`: read selected nodes. Useful args: `includeChildren`, `maxDepth`, `maxNodes`, `clientId`.
+- `get_node_children`: read one node subtree. Pass `id` or `name`; prefer `id` because names can repeat.
+- `save_image`: export one node. Useful args: `nodeId`, `format`, `scale`, `filename`, `savePath`, `clientId`.
+- `download_icons`: batch export SVG. Useful args: `nodeIds`, `contentsOnly`, `svgOutlineText`, `svgSimplifyStroke`, `clientId`.
+- `execute_script`: custom query, batch edit, or canvas creation. Read `references/execute-script.md` before using it.
 
-JiShi PLUGIN API IS REALLY BUGGY. Keep `execute_script` calls small and focused: discovery, structure, content, assets, styling, and verification should usually be separate calls. Do not build or mutate an entire screen, asset set, or design system in one script; large scripts take longer, are harder to debug, are more likely to hit JiShi PluginAPI gotchas mid-run, and can make MCP disconnect or time out.
+All tools accept optional `clientId` and `timeoutMs`.
 
-### Visual Verification
+## Read Integrity
 
-After any visible layout, text, style, export, or asset mutation, export the affected node/frame and inspect the image before claiming visual correctness. JSON reads can confirm node fields, but they cannot prove what actually rendered: text may clip, auto-layout may recalculate unexpectedly, exported assets may be blank or scaled wrong, and icons can disappear even when dimensions look sane. Use visual inspection as the final source of truth for rendered output.
+`get_selection` and `get_node_children` return `{ nodes, summary }`. Always check `summary.truncated`.
 
-## execute_script Rules
+If truncated, do one of these before drawing conclusions:
 
-`code` is a function body executed in the JiShi plugin context. `jsDesign` is the global PluginAPI object. The server wraps most plugin results as MCP text: `content[0].text = JSON.stringify(result, null, 2)`.
+- Increase `maxDepth` or `maxNodes`.
+- Drill into child ids with separate `get_node_children` calls.
+- Narrow the task to the required subtree.
 
-Every `execute_script` call must be wrapped:
+Never treat truncated data as the complete design.
 
-```js
-try {
-  return {
-    ok: true,
-    pageName: jsDesign.currentPage.name,
-    nodes: jsDesign.currentPage.children.map((node) => ({
-      id: node.id,
-      name: node.name,
-      type: node.type,
-      width: node.width,
-      height: node.height,
-    })),
-  }
-} catch (error) {
-  return {
-    ok: false,
-    name: error && error.name,
-    message: error && error.message,
-    stack: error && error.stack,
-  }
-}
-```
+## Export Rules
 
-Avoid raw nodes and non-JSON values:
+- Use `scale: 2` or higher for PNG/JPG unless the user requested another scale.
+- Prefer `savePath` with an absolute path. For temporary exports in this repo, use `temp/snapshots`.
+- Use `download_icons` for multiple SVG icons; it returns separate `success` and `failed` arrays.
+- After visible layout, style, text, asset, or export-related changes, export the affected node/frame and inspect the image before claiming visual correctness.
 
-```js
-return jsDesign.currentPage.children[0] // bad: often serializes poorly
-```
+## Mutation Rules
 
-Return only strings, numbers, booleans, null, arrays, and plain objects. Avoid `undefined`, no-return scripts, functions, symbols, BigInt, Date, cyclic objects, and raw node objects. Promise returns are supported; `console.log` is not returned to the caller.
-
-Use `{ ok: true, ... }` for success and `{ ok: false, name, message, stack }` for failures so callers can distinguish script errors from MCP transport errors.
+- Use dedicated MCP tools for reads and exports.
+- Use `execute_script` only when dedicated tools cannot do the operation.
+- Before mutating the canvas, state what will change.
+- Keep mutation scripts small: discovery, structure, content, assets, styling, and verification should usually be separate calls.
 
 ## Canvas Creation
 
-For visible canvas work, prefer `jsDesign.createNodeFromJSXAsync` with `jsDesign.widget.h`. It creates normal `SceneNode` trees quickly and avoids most incremental `appendChild` layout churn.
+For new visible canvas work, use auto layout and responsive adjustments unless the user explicitly refuses. Avoid building fresh designs from many absolute `x`/`y` placements.
 
-Concrete widget node names available from `jsDesign.widget`: `AutoLayout`, `Frame`, `Image`, `Rectangle`, `Ellipse`, `Text`, `SVG`, `Input`, and `Line`. `Fragment` and `Span` are also declared, but `Fragment` is not a concrete canvas root and `Span` is for text children. For exact props, signatures, and examples, check the declaration file `references/official-typings/widget/index.d.ts` and the component docs under `references/official-docs/小组件 API/API 指南/组件类型/`.
-
-```js
-try {
-  const { h, AutoLayout, Text } = jsDesign.widget
-  const el = h(
-    AutoLayout,
-    { name: 'Card', direction: 'vertical', spacing: 8, padding: 16, width: 320, fill: '#FFFFFF' },
-    h(Text, { fontSize: 20, fontWeight: 700, fill: '#111827' }, 'Title'),
-    h(Text, { width: 'fill-parent', fill: '#6B7280' }, 'Body copy'),
-  )
-  const node = await jsDesign.createNodeFromJSXAsync(el)
-  node.x = 80
-  node.y = 80
-  return { ok: true, id: node.id, name: node.name, type: node.type, width: node.width, height: node.height }
-} catch (error) {
-  return { ok: false, name: error && error.name, message: error && error.message, stack: error && error.stack }
-}
-```
-
-Rules:
-
-- Use a single concrete root (`AutoLayout`, `Frame`, etc.); avoid multi-root `Fragment`.
-- In MCP scripts, use `jsDesign.widget.h(...)`, not JSX literals.
-- Created nodes are parented to `jsDesign.currentPage`; append to another parent after creation if needed.
-- Use imperative creation only for small edits, unsupported node types, post-processing, or mutations of existing nodes.
+For `execute_script` canvas creation, read `references/execute-script.md` and the relevant gotcha first.
 
 ## Gotchas
 
-Scan the relevant file in `references/gotchas/` before MCP operations:
+Read only the relevant file before the operation:
 
-- `js-jsx-node-operations.md` - declarative JSX creation plus imperative PluginAPI creation, parenting, traversal, and deletion.
-- `auto-layout-sizing.md` - auto layout, sizing, scaling, and visual layout verification pitfalls.
-- `responsive-audits.md` - full-tree audits and snippets for fixed-size leftovers, clipping, and responsive repair.
-- `external-resources.md` - external SVG/Iconify and bitmap resource import, rendering, sizing, and export pitfalls.
-- `styles.md` - text style, font loading, text mutation, letter spacing, and effect style pitfalls.
-- `exports-assets.md` - image export, export settings, names, and asset cleanup.
+- `references/gotchas/js-jsx-node-operations.md`: JSX creation, imperative creation, parenting, traversal, deletion.
+- `references/gotchas/auto-layout-sizing.md`: auto layout, sizing, scaling, layout verification.
+- `references/gotchas/responsive-audits.md`: fixed-size leftovers, clipping, responsive repair.
+- `references/gotchas/external-resources.md`: SVG/Iconify, bitmap import, rendering, export issues.
+- `references/gotchas/styles.md`: text style, font loading, letter spacing, effects.
+- `references/gotchas/exports-assets.md`: image export, export settings, asset cleanup.
 
-## Official API References
+## Official References
 
-Start at `references/docs-overview.md`. Use Markdown docs for concepts and examples, and typings for exact API signatures, fields, overloads, and literal values.
+Start at `references/docs-overview.md`. Use Markdown docs for concepts and examples; use typings for exact fields, overloads, and literal values.
 
-- Plugin API docs: `references/official-docs/插件 API/` (70 docs).
-- Widget API docs: `references/official-docs/小组件 API/` (52 docs).
+- Plugin docs: `references/official-docs/插件 API/`.
+- Widget docs: `references/official-docs/小组件 API/`.
 - Plugin typings: `references/official-typings/plugin/plugin-api.d.ts` and `references/official-typings/plugin/index.d.ts`.
 - Widget typings: `references/official-typings/widget/index.d.ts`.
-- Maintenance notes: `references/docs-crawl-notes.md`.
-
-## Other References
-
-- `references/docs-crawl-notes.md` - official docs static URL list maintenance notes and crawl findings.
+- Crawl notes: `references/docs-crawl-notes.md`.
