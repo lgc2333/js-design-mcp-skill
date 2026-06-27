@@ -51,7 +51,7 @@ JS DESIGN API IS REALLYYYYYY BUGGY! You MUST keep calls small and focused. Split
 
 ## Canvas Creation
 
-For fresh designs, ask user first if we should use auto layout and responsive adjustments. If user to let you choose, use them.
+For fresh designs, ask before using auto layout or responsive adjustments. Default to no because they are harder to use and will cost more time. If yes, read the related gotchas first to avoid common pitfalls.
 
 Prefer `jsDesign.createNodeFromJSXAsync` with `jsDesign.widget.h` for visible node trees. It creates normal `SceneNode` trees quickly and avoids most incremental `appendChild` layout churn.
 
